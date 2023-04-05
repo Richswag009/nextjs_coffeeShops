@@ -3,7 +3,7 @@ import Image from "next/image";
 
 const Banner = (props) => {
   return (
-    <div className=" mx-auto relative lg:mb-20 z-20">
+    <div className=" mx-auto relative mb-40 lg:mb-40 z-20">
       <div className="p-4">
         <h1 className="text-6xl font-bold">
           <span className="">Coffee</span>{" "}

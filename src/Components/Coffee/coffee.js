@@ -1,12 +1,13 @@
 import React from "react";
 import CoffeeItem from "./coffee-item";
-// import coffeeStores from "../Data/coffee-stores.json";
 
-const coffee = ({ coffeeStores }) => {
+const coffee = ({ coffeeStores, coffeeStoreHeading }) => {
   return (
-    <div className="w-full mx-10 py-20 md:py-40 lg:py-36">
+    <div className="w-full mx-10 mt-10 md:mt-20">
       {coffeeStores.length > 0 ? (
-        <h2 className="text-3xl font-semibold leading-9">Toronto Stores</h2>
+        <h2 className="text-3xl font-semibold leading-9">
+          {coffeeStoreHeading ? "Stores Near You" : "Toronto Stores"}
+        </h2>
       ) : (
         ""
       )}

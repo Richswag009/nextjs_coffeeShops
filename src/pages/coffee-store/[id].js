@@ -3,21 +3,22 @@ import Head from "next/head";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import React from "react";
-// import coffeeStore from "../../Components/Data/coffee-stores.json";
+import { useContext, useEffect, useState } from "react";
 import { fetchCoffeeStores } from "@/Components/Lib/coffee-store";
 import { FaAddressCard, FaArrowLeft } from "react-icons/fa";
-import { GoLocation, GoTriangleUp } from "react-icons/go";
+import { GoLocation } from "react-icons/go";
+import { storeContext } from "@/stores/stores";
+// import { useEffect } from "react";
 
 export async function getStaticProps(staticprops) {
   const coffeeStores = await fetchCoffeeStores();
   const params = staticprops.params;
-  // console.log(coffeeStores);
+  const findCoffeeStoresById = coffeeStores.find((item) => {
+    return item.id.toString() === params.id;
+  });
   return {
     props: {
-      coffeeStore: coffeeStores.find((item) => {
-        return item.id.toString() === params.id;
-      }),
+      coffeeStore: findCoffeeStoresById ? findCoffeeStoresById : {},
     },
   };
 }
@@ -31,10 +32,33 @@ export async function getStaticPaths() {
   return { paths, fallback: true };
 }
 
-const CoffeeStore = ({ coffeeStore }) => {
+const CoffeeStore = (initialProps) => {
+  const [coffeeStore, setCoffeeStore] = useState(initialProps.coffeeStore);
+
+  const {
+    state: { coffeeStores },
+  } = useContext(storeContext);
+
   const router = useRouter();
-  // console.log(router);
+  const id = router.query.id;
+
+  const isEmpty = (obj) => {
+    return Object.keys(obj).length === 0;
+  };
+
+  useEffect(() => {
+    if (isEmpty(initialProps.coffeeStore)) {
+      if (coffeeStores.length > 0) {
+        const findCoffeeStoresById = coffeeStores.find((coffeeStore) => {
+          return coffeeStore.id.toString() === id;
+        });
+        setCoffeeStore(findCoffeeStoresById);
+      }
+    }
+  }, [id, coffeeStores, initialProps]);
+
   const { name, address, formatted_address, imgUrl } = coffeeStore;
+
   return (
     <>
       <Head>
@@ -62,7 +86,7 @@ const CoffeeStore = ({ coffeeStore }) => {
 
           <div className="shadow border-2 border-slate-900 px-5 w-[350px] h-[180px] py-3 rounded-md">
             <div
-              className="flex items-center px-1
+              className="flex  
              "
             >
               <GoLocation className="text-2xl text-teal-300" />
@@ -70,7 +94,7 @@ const CoffeeStore = ({ coffeeStore }) => {
               <p className="px-2">{address}</p>
             </div>
             <div
-              className="flex items-center py-2 px-1
+              className="flex  py-2 
              "
             >
               <FaAddressCard className="text-3xl" />
